@@ -12,7 +12,7 @@ const MOCK_AUDIO_DATA: AudioData = {
 export const fetchAudioData = async (uniqueId: string): Promise<ApiResponse> => {
   try {
     // In a real scenario, this fetches from the backend
-    const res = await fetch(`/api/formsAPI/getAudio`, {
+    const res = await fetch(`https://www.aiftponline.org/api/formsAPI/getAudio`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ uniqueId }),
