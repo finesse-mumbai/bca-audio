@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Music, Loader2, Share2, Download, Check, Play, Pause, Volume2, VolumeX } from "lucide-react";
+// src/components/AudioPlayer.tsx
+import React, { useState, useRef } from "react";
+import { Music, Share2, Download, Check, Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { AudioData } from "../types";
 
 interface AudioPlayerProps {
@@ -29,6 +30,9 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ data }) => {
 
   // Handle Download
   const handleDownload = () => {
+    // NOTE: For downloading, the browser might need the direct URL,
+    // or the proxy endpoint must be configured to return the Content-Disposition header.
+    // Sticking to the audioUrl passed (which is the proxy URL)
     const link = document.createElement("a");
     link.href = data.audioUrl;
     link.download = `${data.chapterName || "audio"}.mp3`;
@@ -120,7 +124,8 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ data }) => {
       <div className="bg-white/60 rounded-2xl p-6 shadow-inner mb-8 border border-white/50">
         <audio
           ref={audioRef}
-          src={data.audioUrl}
+          // data.audioUrl now contains the SECURE PROXY URL
+          src={data.audioUrl} 
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={handleLoadedMetadata}
           onEnded={() => setIsPlaying(false)}

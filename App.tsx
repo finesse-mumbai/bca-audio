@@ -1,3 +1,4 @@
+// src/App.tsx
 import React, { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { fetchAudioData } from "./services/audioService";
@@ -11,38 +12,33 @@ export default function App() {
 
   useEffect(() => {
     // Logic to extract uniqueID from URL query param keys (e.g. ?unique_id_here)
-    // The previous implementation used `Array.from(params.keys())[0]`
     const searchParams = new URLSearchParams(window.location.search);
     const keys = Array.from(searchParams.keys());
-    // const uniqueId = keys.length > 0 ? keys[0] : null;
-    const uniqueId = "b08dabfb9c5d4aaa";
+    const uniqueId = keys.length > 0 ? keys[0] : "b08dabfb9c5d4aaa"; // Fallback to your hardcoded ID
 
     if (!uniqueId) {
-      // If no ID is provided, we can either error out or show a demo.
-      // For this implementation, we'll try to fetch a default demo ID if none exists,
-      // or just treat it as a "demo_mode" call.
       console.log("No unique ID found in URL, loading demo content.");
     }
 
     const loadData = async () => {
       setLoading(true);
       try {
-        // Pass "demo" if no uniqueId is found to trigger the mock in the service
         const data = await fetchAudioData(uniqueId || "demo");
 
         if (data.success && data.audio) {
-            // If the original logic had a proxy, we apply it here or in the service.
-            // Since we are running client-side only, we just use the URL returned.
-            // But preserving the structure from user request:
-            const originalUrl = data.audio.audioUrl;
+            const originalInsecureUrl = data.audio.audioUrl;
             
-            // NOTE: In a real Next.js app, this proxy endpoint would handle CORS or hiding source.
-            // Here we use the direct URL for the demo to work.
-            // If this were the real app, we'd keep: `/api/formsAPI/audioProxy?url=${encodeURIComponent(originalUrl)}`
+            // 🚨 THE FIX: Use the secure proxy endpoint
+            // This URL (e.g., /api/audio-proxy?url=...) is loaded over HTTPS,
+            // and your server-side proxy handles fetching the original HTTP S3 resource.
+            const proxyUrl = `/api/formsAPI/audioProxy?url=${encodeURIComponent(originalInsecureUrl)}`;
             
+            console.log("Using Proxy URL for playback:", proxyUrl);
+
             setAudioData({
               ...data.audio,
-              audioUrl: originalUrl // Using direct URL for client-side demo
+              // The <audio> tag will use this secure proxy URL
+              audioUrl: proxyUrl
             });
         } else {
           setError(data.message || "Audio not found!");

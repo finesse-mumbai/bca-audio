@@ -1,12 +1,14 @@
+// src/services/audioService.ts
 import { AudioData, ApiResponse } from '../types';
 
 // Mock data to show when no API is available (for demonstration purposes)
+// NOTE: We use the HTTP URL here to simulate the actual API response you are getting.
 const MOCK_AUDIO_DATA: AudioData = {
-  chapterName: "Welcome to AudioFlow",
+  chapterName: "Welcome to AudioFlow (Mock Data)",
   companyName: "AudioFlow Demo",
   companyWebsite: "https://example.com",
-  // Using a sample MP3 for demonstration
-  audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+  // Simulate the insecure URL received from the database/API
+  audioUrl: "http://assests.aiftp.next.s3.ap-south-1.amazonaws.com/audio/SoundHelix-Song-1.mp3" 
 };
 
 export const fetchAudioData = async (uniqueId: string): Promise<ApiResponse> => {
@@ -18,11 +20,10 @@ export const fetchAudioData = async (uniqueId: string): Promise<ApiResponse> => 
       body: JSON.stringify({ uniqueId }),
     });
 
-    // Check if the endpoint actually exists (it won't in this pure frontend demo)
+    // Check if the endpoint actually exists
     const contentType = res.headers.get("content-type");
     if (!res.ok || !contentType || !contentType.includes("application/json")) {
       console.warn("API unavailable, falling back to mock data for demonstration.");
-      // Simulate network delay
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       return {
@@ -31,13 +32,12 @@ export const fetchAudioData = async (uniqueId: string): Promise<ApiResponse> => 
       };
     }
 
-    const data = await res.json();
+    const data: ApiResponse = await res.json();
     console.log(data, "data coming");
     return data;
 
   } catch (error) {
     console.warn("Fetch error, falling back to mock data:", error);
-    // Fallback for demo so the UI is visible
     await new Promise(resolve => setTimeout(resolve, 1000));
     return {
         success: true,
