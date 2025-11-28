@@ -1,0 +1,5 @@
+{
+  "name": "Copy of AudioFlow Player",
+  "description": "A single-page audio player application that renders audio content based on a unique ID from the URL.",
+  "requestFramePermissions": []
+}
