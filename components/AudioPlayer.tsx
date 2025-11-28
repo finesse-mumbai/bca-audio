@@ -120,7 +120,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ data }) => {
       <div className="bg-white/60 rounded-2xl p-6 shadow-inner mb-8 border border-white/50">
         <audio
           ref={audioRef}
-          src={data.audioUrl}
+          src={'http://assests.aiftp.next.s3.ap-south-1.amazonaws.com/audio/1764337658969-fk38gelm5q.m4a'}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={handleLoadedMetadata}
           onEnded={() => setIsPlaying(false)}
