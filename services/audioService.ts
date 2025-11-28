@@ -32,7 +32,7 @@ export const fetchAudioData = async (uniqueId: string): Promise<ApiResponse> => 
     }
 
     const data = await res.json();
-    console.log(data, "data coming");
+    console.log(data, "data comign")
     return data;
 
   } catch (error) {
