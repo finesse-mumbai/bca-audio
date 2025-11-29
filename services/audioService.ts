@@ -2,11 +2,11 @@ import { AudioData, ApiResponse } from '../types';
 
 // Mock data to show when no API is available (for demonstration purposes)
 const MOCK_AUDIO_DATA: AudioData = {
-  chapterName: "Welcome to AudioFlow",
-  companyName: "AudioFlow Demo",
-  companyWebsite: "https://example.com",
+  chapterName: "ASSORTED CASE STUDIES",
+  companyName: "BCASONLINE",
+  companyWebsite: "https://bcasonline.org/",
   // Using a sample MP3 for demonstration
-  audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+  audioUrl: "/Yogesh_Thar.m4a"
 };
 
 export const fetchAudioData = async (uniqueId: string): Promise<ApiResponse> => {
