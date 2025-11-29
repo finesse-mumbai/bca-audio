@@ -1,47 +1,19 @@
-import { AudioData, ApiResponse } from '../types';
-
-// Mock data to show when no API is available (for demonstration purposes)
-const MOCK_AUDIO_DATA: AudioData = {
-  chapterName: "ASSORTED CASE STUDIES",
-  companyName: "BCASONLINE",
-  companyWebsite: "https://bcasonline.org/",
-  // Using a sample MP3 for demonstration
-  audioUrl: "/Yogesh_Thar.m4a"
-};
+import { AUDIO_LIST } from "../data/audioList";
+import { ApiResponse } from "../types";
 
 export const fetchAudioData = async (uniqueId: string): Promise<ApiResponse> => {
-  try {
-    // In a real scenario, this fetches from the backend
-    const res = await fetch(`https://www.aiftponline.org/api/formsAPI/getAudio`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ uniqueId }),
-    });
+  // local find
+  const audio = AUDIO_LIST.find(item => item.id === uniqueId);
 
-    // Check if the endpoint actually exists (it won't in this pure frontend demo)
-    const contentType = res.headers.get("content-type");
-    if (!res.ok || !contentType || !contentType.includes("application/json")) {
-      console.warn("API unavailable, falling back to mock data for demonstration.");
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      return {
-        success: true,
-        audio: MOCK_AUDIO_DATA
-      };
-    }
-
-    const data = await res.json();
-    console.log(data, "data comign")
-    return data;
-
-  } catch (error) {
-    console.warn("Fetch error, falling back to mock data:", error);
-    // Fallback for demo so the UI is visible
-    await new Promise(resolve => setTimeout(resolve, 1000));
+  if (!audio) {
     return {
-        success: true,
-        audio: MOCK_AUDIO_DATA
+      success: false,
+      message: "Audio not found"
     };
   }
+
+  return {
+    success: true,
+    audio
+  };
 };

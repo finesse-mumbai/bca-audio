@@ -10,52 +10,30 @@ export default function App() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Logic to extract uniqueID from URL query param keys (e.g. ?unique_id_here)
-    // The previous implementation used `Array.from(params.keys())[0]`
-    const searchParams = new URLSearchParams(window.location.search);
-    const keys = Array.from(searchParams.keys());
-    // const uniqueId = keys.length > 0 ? keys[0] : null;
-    const uniqueId = "b08dabfb9c5d4aaaf";
+  const searchParams = new URLSearchParams(window.location.search);
+  const keys = Array.from(searchParams.keys());
+  const uniqueId = keys[0]; // ?b08dabfb9c5d4aaa → "b08dabfb9c5d4aaa"
 
-    if (!uniqueId) {
-      // If no ID is provided, we can either error out or show a demo.
-      // For this implementation, we'll try to fetch a default demo ID if none exists,
-      // or just treat it as a "demo_mode" call.
-      console.log("No unique ID found in URL, loading demo content.");
+  if (!uniqueId) {
+    setError("No audio ID provided in URL!");
+    setLoading(false);
+    return;
+  }
+
+  const loadData = async () => {
+    const data = await fetchAudioData(uniqueId);
+
+    if (data.success && data.audio) {
+      setAudioData(data.audio);
+    } else {
+      setError("Audio not found!");
     }
 
-    const loadData = async () => {
-      setLoading(true);
-      try {
-        // Pass "demo" if no uniqueId is found to trigger the mock in the service
-        const data = await fetchAudioData(uniqueId || "demo");
+    setLoading(false);
+  };
 
-        if (data.success && data.audio) {
-            // If the original logic had a proxy, we apply it here or in the service.
-            // Since we are running client-side only, we just use the URL returned.
-            // But preserving the structure from user request:
-            const originalUrl = data.audio.audioUrl;
-            
-            // NOTE: In a real Next.js app, this proxy endpoint would handle CORS or hiding source.
-            // Here we use the direct URL for the demo to work.
-            // If this were the real app, we'd keep: `/api/formsAPI/audioProxy?url=${encodeURIComponent(originalUrl)}`
-            
-            setAudioData({
-              ...data.audio,
-              audioUrl: originalUrl // Using direct URL for client-side demo
-            });
-        } else {
-          setError(data.message || "Audio not found!");
-        }
-      } catch (err) {
-        setError("Something went wrong while fetching the audio.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
+  loadData();
+}, []);
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#fff5f8] to-[#fce8ef] p-4">
